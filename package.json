@@ -1,0 +1,35 @@
+{
+  "name": "redux-light",
+  "version": "1.0.0",
+  "description": "Redux with one store, one reducer and without boilerplate.",
+  "main": "createStore.js",
+  "scripts": {
+    "test": "node node_modules/jest/bin/jest.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gentlee/react-redux-no-boilerplate.git"
+  },
+  "keywords": [
+    "redux",
+    "light",
+    "store",
+    "reducer",
+    "boilerplate"
+  ],
+  "author": "Alexander Danilov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Gentlee/redux-light/issues"
+  },
+  "homepage": "https://github.com/Gentlee/redux-light#readme",
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "jest": "^21.2.1",
+    "redux": "^3.7.2"
+  },
+  "peerDependencies": {
+    "redux": "^3.7.2"
+  }
+}
