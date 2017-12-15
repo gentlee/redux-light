@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Gentlee/react-redux-no-boilerplate.git"
+    "url": "git+https://github.com/Gentlee/redux-light.git"
   },
   "keywords": [
     "redux",
