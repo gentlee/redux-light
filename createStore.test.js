@@ -89,4 +89,20 @@ describe('store', () => {
 
         expect(store.getState()).toEqual(initialState);
     });
+
+    it('should unsubscribe', () => {
+        let initialState = { test: { counter: 0 } };
+        let store = createStore(initialState);
+        let onChange = jest.fn();
+
+        let unsubscribe = store.subscribe(onChange);
+        unsubscribe();
+
+        store.setState({
+            type: 'TEST',
+            test: { counter: 27 }
+        });
+
+        expect(onChange).not.toBeCalled();
+    });
 });
