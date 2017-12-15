@@ -1,7 +1,7 @@
 {
   "name": "redux-light",
   "version": "1.0.0",
-  "description": "Redux with one store, one reducer and without boilerplate.",
+  "description": "Simplified redux without any boilerplate.",
   "main": "createStore.js",
   "scripts": {
     "test": "node node_modules/jest/bin/jest.js --watch"

@@ -1,5 +1,5 @@
 # redux-light
-Redux without any boilerplate :nerd_face:.
+Simplified redux without any boilerplate :nerd_face:.
 
 Currently based on [redux](https://github.com/reactjs/redux) (c) Dan Abramov and compatible with all libraries that depend on it, such as `react-redux` etc. Just use `redux-light`'s store instead of `redux`'s store.
 
@@ -101,12 +101,12 @@ Use `Provider` and `connect` same as before, except no need to pass `mapDispatch
 
 All `redux`'s store api plus:
 
-    subscribe(callback) // (prevState, state, changes) => {}
+    function subscribe(onStateChanged: function): function // callback: (prevState, state, changes) => {}, returns unsubscribe function
     
-    setState(newState) // fastest
+    function setState(newState: object)  // fastest
     
-    setState(type, newState)
+    function setState(type: string, newState: object)
     
-    setState(type, rootProp, newRootState)
+    function setState(type: string, rootProp: string, newRootPropState: object)
     
-    resetState(newState) // resets to initial, no type required
+    function resetState(newState: object) // resets to initial, merged with newState, no type required
