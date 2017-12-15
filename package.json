@@ -1,6 +1,6 @@
 {
   "name": "redux-light",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simplified redux without any boilerplate.",
   "main": "createStore.js",
   "scripts": {
