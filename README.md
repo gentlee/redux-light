@@ -7,7 +7,7 @@ Default reducer merges new state, passed to `setState` function, same as `Compon
 
     let newState = { ...oldState };
     for (let rootProp in stateChanges) {
-        newState[key] = { ...oldState[rootProp], ...stateChanges[rootProp] };
+        newState[rootProp] = { ...oldState[rootProp], ...stateChanges[rootProp] };
     }
 
 ## Installation
