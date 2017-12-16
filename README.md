@@ -96,6 +96,11 @@ Use `Provider` and `connect` same as before, except no need to pass `mapDispatch
     }
 
     ...
+
+    export default connect(state => ({
+        loading: state.authentication.loading,
+        error: state.authentication.error
+    }))(SignIn);
     
 ## Store api definition
 
