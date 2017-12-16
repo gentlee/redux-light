@@ -1,7 +1,7 @@
 # redux-light
 Simplified redux without any boilerplate :nerd_face:.
 
-Currently based on [redux](https://github.com/reactjs/redux) (c) Dan Abramov and compatible with all libraries that depend on it, such as `react-redux` etc. Just use `redux-light`'s store instead of `redux`'s store.
+Currently based on [redux](https://github.com/reactjs/redux) (c) Dan Abramov and compatible with all libraries that depend on it, such as `react-redux` etc. Just use `redux-light` store instead of `redux` store.
 
 Default reducer merges new state, passed to `setState` function, same as `Component.setState` from `react`, but does it for each root property. [Pseudo-]code is:
 
@@ -23,6 +23,7 @@ Default reducer merges new state, passed to `setState` function, same as `Compon
     import createStore from 'redux-light';
 
     let store = createStore(initialState);
+    
     export let getState = store.getState;
     export let setState = store.setState;
     export let resetState = store.resetState;
@@ -104,14 +105,14 @@ Use `Provider` and `connect` same as before, except no need to pass `mapDispatch
     
 ## Store api definition
 
-All `redux`'s store api plus:
+All `redux` store api plus:
 
     function subscribe(onStateChanged: function): function // callback: (prevState, state, changes) => {}, returns unsubscribe function
     
-    function setState(newState: object)  // fastest
+    function setState(newState: object)
     
     function setState(type: string, newState: object)
     
     function setState(type: string, rootProp: string, newRootPropState: object)
     
-    function resetState(newState: object) // resets to initial, merged with newState, no type required
+    function resetState(newState: object) // resets to initial state, merged with newState, no type required
