@@ -2,9 +2,12 @@
   "name": "redux-light",
   "version": "1.0.1",
   "description": "Simplified redux without any boilerplate.",
-  "main": "createStore.js",
+  "main": "lib/createStore.js",
   "scripts": {
-    "test": "node node_modules/jest/bin/jest.js --watch"
+    "test": "node node_modules/jest/bin/jest.js --watch",
+    "clean": "rm -rf lib",
+    "build": "npm run clean && babel src --out-dir lib",
+    "prepublishOnly": "node node_modules/jest/bin/jest.js && npm run build"
   },
   "repository": {
     "type": "git",
@@ -24,6 +27,7 @@
   },
   "homepage": "https://github.com/Gentlee/redux-light#readme",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "jest": "^21.2.1",

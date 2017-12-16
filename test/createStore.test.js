@@ -1,6 +1,6 @@
 'use strict';
 
-import createStore from './createStore';
+import createStore from '../src/createStore';
 
 describe('createStore', () => {
     it('should create store with initial state', () => {
