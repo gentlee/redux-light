@@ -69,14 +69,12 @@ No need for reducers, just create store and use it.
 
 Actions are usual functions. State is changes by `setState` method, and every state change should have a reason, passed with `type` parameter. This parameter is not used by store itself (except some built-in types), but is very important for descriptive logging:
 
-    const PRODUCTION = process.env === 'PRODUCTION';
-    
-    store.subscribe((prevState, state, changes) => {
-        if (!PRODUCTION) {
+    if (process.env !== 'PRODUCTION') {
+        store.subscribe((prevState, state, changes) => {
             let { type, ...otherProps } = changes;
             console.log(type, otherProps);
-        }
-    });
+        });
+    }
     
 ## react-redux
 
