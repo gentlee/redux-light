@@ -122,7 +122,7 @@ Sooner or later you'll think about using helpers to reduce code duplication. `si
         return await helpers.load({
             type: 'SIGN_IN',
             rootProp: 'authentication',
-            function: () => api.signIn(options)
+            loadFunc: () => api.signIn(options)
         });
     }
 
