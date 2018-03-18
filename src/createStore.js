@@ -6,6 +6,10 @@ const PRODUCTION = process.env.NODE_ENV === 'production';
 const RESET_STATE_TYPE = '@@redux-light/RESET_STATE';
 
 export default function(initialState) {
+    throwIfNotAnObject(initialState);
+    for (let key in initialState) {
+        throwIfNotAnObject(initialState[key]);
+    }
 
     // variables for subscribe method
     
@@ -24,7 +28,9 @@ export default function(initialState) {
             if (!PRODUCTION && !baseState.hasOwnProperty(key)) {
                 throw new Error(`No root property with name '${key}' found in the old state.`);
             }
-            newState[key] = { ...baseState[key], ...stateChanges[key] };
+            let newValue = stateChanges[key];
+            throwIfNotAnObject(newValue);
+            newState[key] = { ...baseState[key], ...newValue };
         }
 
         previousState = oldState;
@@ -77,4 +83,11 @@ export default function(initialState) {
         setState,
         resetState
     };
+}
+
+function throwIfNotAnObject(value) {
+    const type = typeof value;
+    if (type !== 'object') {
+        throw new Exception(`State root property values should be of type 'object', got '${type}'.`);
+    }
 }

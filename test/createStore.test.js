@@ -9,9 +9,37 @@ describe('createStore', () => {
 
         expect(store.getState()).toEqual(initialState);
     });
+
+    it('should throw exception if initial state is not an object', () => {
+        let initialState = 0;
+        
+        expect(() => {
+            createStore(initialState);
+        }).toThrow();
+    });
+
+    it('should throw exception if initial state root props are not objects', () => {
+        let initialState = { counter: 0 };
+        
+        expect(() => {
+            createStore(initialState);
+        }).toThrow();
+    });
 });
 
 describe('store', () => {
+    it('should throw exception if state root props are not objects', () => {
+        let initialState = { test: { counter: 0 } };
+        let store = createStore(initialState);
+
+        expect(() => {
+            store.setState({
+                type: 'TEST',
+                test: 0
+            });
+        }).toThrow();
+    });
+
     it('should set state', () => {
         let initialState = {
             test: {
