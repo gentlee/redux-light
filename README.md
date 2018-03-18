@@ -3,9 +3,9 @@ Simplified redux without any boilerplate :nerd_face:.
 
 Currently based on [redux](https://github.com/reactjs/redux) (c) Dan Abramov and compatible with all libraries that depend on it, such as `react-redux` etc. Just use `redux-light` store instead of `redux` store.
 
-Default reducer merges new state, passed to `setState` function, same as `Component.setState` from `react`, but does it for each root property. [Pseudo-]code is:
+Default reducer merges new state, passed to `setState` function, same as `Component.setState` from `react`, but does it for each root property. Pseudo-code is:
 
-    let newState = { ...oldState };
+    let newState = { ...store.getState() };
     for (let rootProp in stateChanges) {
         newState[rootProp] = { ...oldState[rootProp], ...stateChanges[rootProp] };
     }
@@ -76,6 +76,17 @@ Actions are usual functions. State is changes by `setState` method, and every st
         });
     }
     
+If also could be used for additional handling of state changes:
+
+    store.subscribe((prevState, state, changes) => {
+        switch (changes.type) {
+            case 'SIGN_IN_SUCCESS':
+                showAlert(strings.alert_sign_in_success);
+                break;
+        }
+    });
+
+    
 ## react-redux
 
 Use `Provider` and `connect` same as before, except no need to pass `mapDispatchToProps`, actions should be imported and used as usual functions:
@@ -101,6 +112,20 @@ Use `Provider` and `connect` same as before, except no need to pass `mapDispatch
         error: state.authentication.error
     }))(SignIn);
     
+## Advanced
+    
+### helpers
+
+Sooner or later you'll think about using helpers to reduce code duplication. `signIn` function could be rewritten like this:
+
+    export async function signIn(options) {
+        return await helpers.load({
+            type: 'SIGN_IN',
+            rootProp: 'authentication',
+            function: () => api.signIn(options)
+        });
+    }
+
 ## Store api definition
 
 All `redux` store api plus:
