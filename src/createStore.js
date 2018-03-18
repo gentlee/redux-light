@@ -16,10 +16,15 @@ export default function(initialState) {
     let previousState = null;
     let currentState = initialState;
     let changes = null;
+    let notifyingListeners = false;
 
     // reducer
     
     const reducer = (oldState, stateChanges) => {
+        if (notifyingListeners) {
+            console.warn('Changing state from listener leads to wrong listener arguments (prevState, state, changes). Consider using setTimeout.');
+        }
+
         let baseState = stateChanges.type === RESET_STATE_TYPE ? initialState : oldState;
         let newState = { ...baseState };
 
@@ -48,7 +53,9 @@ export default function(initialState) {
         
     function subscribe(onStateChanged) {
         return store.subscribe(() => {
+            notifyingListeners = true;
             onStateChanged(previousState, currentState, changes);
+            notifyingListeners = false;
         });
     }
 

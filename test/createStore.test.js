@@ -2,6 +2,8 @@
 
 import createStore from '../src/createStore';
 
+console.warn = jest.genMockFn();
+
 describe('createStore', () => {
     it('should create store with initial state', () => {
         let initialState = { test: { counter: 0 } };
@@ -132,5 +134,20 @@ describe('store', () => {
         });
 
         expect(onChange).not.toBeCalled();
+    });
+
+    it('should show warning when state changes from listener', () => {
+        let store = createStore({ test: { counter: 0 } });
+        let stateChanged = jest.fn();
+
+        store.subscribe((oldState, state, changes) => {
+            if (changes.type !== 'INSIDE') {
+                store.setState({ type: 'INSIDE', test: { counter: state.test.counter + 1 } });
+            }
+        });
+        
+        store.setState({ type: 'TEST', test: { counter: store.getState().test.counter + 1 } });
+
+        expect(console.warn).toBeCalled();
     });
 });
