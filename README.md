@@ -126,9 +126,11 @@ Sooner or later you'll think about using helpers to reduce code duplication. `si
         });
     }
 
+Implementation of helpers is up to you :)
+
 ### no store import
 
-If you don't want to import store, getState, setState, but to get them from `react-redux`, you should rewrite you actions like this:
+If you want not to import store, getState, setState, but to get them from `react-redux`, you should rewrite your actions like this:
 
     export function signIn(setState, getState) {
         return async options => {
