@@ -1,6 +1,6 @@
 {
   "name": "redux-light",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Simplified redux without any boilerplate.",
   "main": "lib/createStore.js",
   "scripts": {
@@ -28,6 +28,7 @@
   "homepage": "https://github.com/Gentlee/redux-light#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "jest": "^21.2.1",
