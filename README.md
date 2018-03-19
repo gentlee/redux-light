@@ -126,6 +126,29 @@ Sooner or later you'll think about using helpers to reduce code duplication. `si
         });
     }
 
+### no store import
+
+If you don't want to import store, getState, setState, but to get them from `react-redux`, you should rewrite you actions like this:
+
+    export function signIn(setState, getState) {
+        return async options => {
+            return await helpers.load({
+                type: 'SIGN_IN',
+                rootProp: 'authentication',
+                loadFunc: () => api.signIn(options)
+            });
+        }
+    }
+    
+And bind them with `mapDispatchToProps` of react-redux `connect` function:
+
+    export default connect(state => ({
+        loading: state.authentication.loading,
+        error: state.authentication.error
+    }), dispatch => ({
+        signIn: dispatch(actions.authentication.signIn)
+    }))(SignIn);
+
 ## Store api definition
 
 All `redux` store api plus:

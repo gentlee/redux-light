@@ -150,4 +150,22 @@ describe('store', () => {
 
         expect(console.warn).toBeCalled();
     });
+
+    it('dispatch should work as setState', () => {
+        let store = createStore({ test: { counter: 0 } });
+
+        store.dispatch('TEST', 'test', { counter: 2 });
+
+        expect(store.getState()).toEqual({ test: { counter: 2 } });
+    });
+
+    it('dispatch should accept functions and pass setState & getState as arguments', () => {
+        let store = createStore({ test: { counter: 0 } });
+
+        store.dispatch((setState, getState) => {
+            setState('TEST', 'test', { counter: 1 });
+        });
+
+        expect(store.getState()).toEqual({ test: { counter: 1 } });
+    });
 });

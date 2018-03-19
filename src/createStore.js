@@ -62,6 +62,11 @@ export default function(initialState) {
     // setState
     
     function setState() {
+        // HACK, similar to redux-thunk for using with mapDispatchToProps of react-redux
+        if (typeof arguments[0] === 'function') {
+            return arguments[0](setState, store.getState);
+        }
+
         let state;
         if (typeof arguments[0] === 'string') {
             let type = arguments[0];
@@ -86,6 +91,7 @@ export default function(initialState) {
     
     return {
         ...store,
+        dispatch: setState,
         subscribe,
         setState,
         resetState
