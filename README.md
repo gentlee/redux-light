@@ -1,7 +1,7 @@
 # redux-light
 Simplified redux without any boilerplate :nerd_face:.
 
-Currently based on [redux](https://github.com/reactjs/redux) (c) Dan Abramov and compatible with all libraries that depend on it, such as `react-redux` etc. Just use `redux-light` store instead of `redux` store.
+Currently based on [redux](https://github.com/reactjs/redux) (c) Dan Abramov and compatible with most libraries that depend on it, such as `react-redux` etc. Just use `redux-light` store instead of `redux` store.
 
 Default reducer merges new state, passed to `setState` function, same as `Component.setState` from `react`, but does it for each root property. Pseudo-code is:
 
@@ -9,6 +9,20 @@ Default reducer merges new state, passed to `setState` function, same as `Compon
     for (let rootProp in stateChanges) {
         newState[rootProp] = { ...oldState[rootProp], ...stateChanges[rootProp] };
     }
+    
+## Table of contents
+
+ - [Installation](https://github.com/Gentlee/redux-light#installation)
+ - [Example](https://github.com/Gentlee/redux-light#example)
+   - [store/index.js](https://github.com/Gentlee/redux-light#storeindexjs)
+   - [actions/authentication.js](https://github.com/Gentlee/redux-light#actionsauthenticationjs)
+ - [React-redux](https://github.com/Gentlee/redux-light#react-redux)
+   - [views/SignIn.js](https://github.com/Gentlee/redux-light#viewssigninjs)
+ - [Advanced](https://github.com/Gentlee/redux-light#advanced)
+   - [helpers](https://github.com/Gentlee/redux-light#helpers)
+   - [no store import](https://github.com/Gentlee/redux-light#no-store-import)
+   - [middleware](https://github.com/Gentlee/redux-light#middleware)
+ - [Store api definition](https://github.com/Gentlee/redux-light#store-api-definition)
 
 ## Installation
 
@@ -67,7 +81,7 @@ No need for reducers, just create store and use it.
         });
     }
 
-Actions are usual functions. State is changes by `setState` method, and every state change should have a reason, passed with `type` parameter. This parameter is not used by store itself (except some built-in types), but is very important for descriptive logging:
+Actions are usual functions. State is changed by `setState` method, and every state change should have a reason, passed with `type` parameter. This parameter is not used by store itself (except some built-in types), but is very important for descriptive logging:
 
     if (process.env !== 'PRODUCTION') {
         store.subscribe((prevState, state, changes) => {
@@ -150,6 +164,16 @@ And bind them with `mapDispatchToProps` of react-redux `connect` function:
     }), dispatch => ({
         signIn: dispatch(actions.authentication.signIn)
     }))(SignIn);
+    
+### middleware
+
+Currently there is no built-in middleware functionality, but you can always wrap `setState` method like this:
+
+    let next = store.setState;
+    store.setState = (...args) => {
+        ...
+        next.apply(null, args);
+    }
 
 ## Store api definition
 
