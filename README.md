@@ -83,7 +83,7 @@ No need for reducers, just create store and use it.
 
 Actions are usual functions. State is changed by `setState` method, and every state change should have a reason, passed with `type` parameter. This parameter is not used by store itself (except some built-in types), but is very important for descriptive logging:
 
-    if (process.env !== 'PRODUCTION') {
+    if (process.env.NODE_ENV !== 'production') {
         store.subscribe((prevState, state, changes) => {
             let { type, ...otherProps } = changes;
             console.log(type, otherProps);
