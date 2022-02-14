@@ -1,35 +1,35 @@
 const NOT_PRODUCTION =
   __DEV__ || (Boolean(process?.env.NODE_ENV) && process.env.NODE_ENV !== 'production')
 
-export type Action<TValue, TState extends Record<string, TValue>> = {
+export type StateAction<TState extends Record<string, TValue>, TValue extends object> = {
   type: typeof SET_STATE_TYPE | typeof RESET_STATE_TYPE
-  state: StateChange<TValue, TState>
+  state: StateChange<TState, TValue>
 }
 
-export type StateChange<TValue, TState extends Record<string, TValue>> = {
+export type StateChange<TState extends Record<string, TValue>, TValue extends object = object> = {
   [key in keyof TState]?: Partial<TState[key]>
 }
 
 export const SET_STATE_TYPE = 'redux-light/SET_STATE'
 export const RESET_STATE_TYPE = 'redux-light/RESET_STATE'
 
-export const setStateAction = <TValue, TState extends Record<string, TValue>>(
-  state: StateChange<TValue, TState>
+export const setStateAction = <TState extends Record<string, TValue>, TValue extends object>(
+  state: StateChange<TState, TValue>
 ) =>
   ({
     type: SET_STATE_TYPE,
     state,
   } as const)
 
-export const resetStateAction = <TValue, TState extends Record<string, TValue>>(
-  state: StateChange<TValue, TState>
+export const resetStateAction = <TState extends Record<string, TValue>, TValue extends object>(
+  state: StateChange<TState, TValue>
 ) =>
   ({
     type: RESET_STATE_TYPE,
     state,
   } as const)
 
-export const createReducer = <TValue, TState extends Record<string, TValue>>({
+export const createReducer = <TState extends Record<string, TValue>, TValue extends object>({
   initialState,
   validationEnabled = NOT_PRODUCTION,
 }: {
@@ -41,7 +41,7 @@ export const createReducer = <TValue, TState extends Record<string, TValue>>({
     Object.values(initialState).forEach(throwIfNotAnObject)
   }
 
-  return (state: TState | undefined = initialState, action: Action<TValue, TState>) => {
+  return (state: TState | undefined = initialState, action: StateAction<TState, TValue>) => {
     if (action.type !== SET_STATE_TYPE && action.type !== RESET_STATE_TYPE) return state
 
     if (action.type === RESET_STATE_TYPE) state = initialState

@@ -1,5 +1,6 @@
-import { createStore } from 'redux'
+import { Action, combineReducers, createStore } from 'redux'
 import { createReducer, resetStateAction, setStateAction, StateChange } from './createStore'
+import { batchActions, enableBatching } from 'redux-batched-actions'
 
 const initialState = {
   test: {
@@ -36,11 +37,16 @@ test('should change state an setStateAction', () => {
 test('should reset state', () => {
   const reducer = createReducer({ initialState })
   const store = createStore(reducer)
+  const setState = (state: StateChange<typeof initialState>) =>
+    store.dispatch(setStateAction(state))
+  const resetState = (state: StateChange<typeof initialState>) =>
+    store.dispatch(resetStateAction(state))
+  const getState = store.getState
 
-  store.dispatch(setStateAction({ test: { value: 1 } }))
-  store.dispatch(resetStateAction({ test: { text: 'test1' } }))
+  setState({ test: { value: 1 } })
+  resetState({ test: { text: 'test1' } })
 
-  expect(store.getState()).toEqual({
+  expect(getState()).toEqual({
     test: {
       value: 0,
       text: 'test1',
@@ -87,4 +93,55 @@ test('should throw error when adding new root prop', () => {
   expect(() => store.dispatch(setStateAction({ error: { value: 1 } }))).toThrow(
     `No root property with name 'error' found in the current state.`
   )
+})
+
+test('should work with other reducers', () => {
+  const reducer = createReducer({ initialState, validationEnabled: true })
+  const store = createStore(
+    combineReducers({
+      state: reducer,
+      counter: (state: number | undefined = 0, action: Action<'increment'>) => {
+        if (action.type === 'increment') {
+          return state + 1
+        }
+        return state
+      },
+    })
+  )
+
+  store.dispatch({ type: 'increment' })
+  store.dispatch(setStateAction({ test: { value: 5 } }))
+
+  expect(store.getState()).toEqual({
+    state: {
+      ...initialState,
+      test: {
+        ...initialState.test,
+        value: 5,
+      },
+    },
+    counter: 1,
+  })
+})
+
+test('should work with batch actions', () => {
+  const reducer = createReducer({ initialState })
+  // @ts-ignore redux-batched-actions TS issue
+  const store = createStore(enableBatching(reducer))
+  const subscriber = jest.fn()
+  store.subscribe(subscriber)
+
+  store.dispatch(
+    batchActions([setStateAction({ test: { value: 5 } }), setStateAction({ test: { test: '0' } })])
+  )
+
+  expect(subscriber).toBeCalledTimes(1)
+  expect(store.getState()).toEqual({
+    ...initialState,
+    test: {
+      ...initialState.test,
+      value: 5,
+      test: '0',
+    },
+  })
 })
