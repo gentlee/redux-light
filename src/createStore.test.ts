@@ -59,44 +59,8 @@ test('should reset state', () => {
   })
 })
 
-test('should throw error when initial state or root values are not objects', () => {
-  expect(() => {
-    // @ts-ignore
-    createReducer({ initialState: 4, validationEnabled: true })
-  }).toThrow(
-    "State and its root property values should be of type 'object', got value '4' of type 'number'."
-  )
-
-  expect(() => {
-    // @ts-ignore
-    createReducer({ initialState: { test: 'error' }, validationEnabled: true })
-  }).toThrow(
-    "State and its root property values should be of type 'object', got value 'error' of type 'string'."
-  )
-})
-
-test('should throw error when adding new root prop', () => {
-  const reducer = createReducer({ initialState, validationEnabled: true })
-  const store = createStore(reducer)
-
-  // @ts-ignore
-  expect(() => store.dispatch(setStateAction({ test: 1 }))).toThrow(
-    "State and its root property values should be of type 'object', got value '1' of type 'number'."
-  )
-})
-
-test('should throw error when adding new root prop', () => {
-  const reducer = createReducer({ initialState, validationEnabled: true })
-  const store = createStore(reducer)
-
-  // @ts-ignore
-  expect(() => store.dispatch(setStateAction({ error: { value: 1 } }))).toThrow(
-    `No root property with name 'error' found in the current state.`
-  )
-})
-
 test('should work with other reducers', () => {
-  const reducer = createReducer({ initialState, validationEnabled: true })
+  const reducer = createReducer({ initialState })
   const store = createStore(
     combineReducers({
       state: reducer,
