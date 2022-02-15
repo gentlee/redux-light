@@ -24,7 +24,7 @@ test('should create reducer with proper initial state', () => {
   const reducer = createReducer({ initialState })
   const store = createStore(reducer)
 
-  expect(store.getState().test.value).toEqual(0)
+  expect(store.getState()).toBe(initialState)
 })
 
 test('should change state an setStateAction', () => {
