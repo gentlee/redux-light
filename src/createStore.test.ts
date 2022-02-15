@@ -30,13 +30,11 @@ test('should create reducer with proper initial state', () => {
 test('should change state an setStateAction', () => {
   const reducer = createReducer({ initialState })
   const store = createStore(reducer)
-  const setState = (state: Parameters<typeof setStateAction>[0]) =>
-    store.dispatch(setStateAction(state))
 
-  setState({ test: { value: 1 } })
+  store.dispatch(setStateAction({ test: { value: 1 } }))
   expect(store.getState().test.value).toEqual(1)
 
-  setState({ test: { value: 2 } })
+  store.dispatch(setStateAction({ test: { value: 2 } }))
   expect(store.getState().test.value).toEqual(2)
 })
 
