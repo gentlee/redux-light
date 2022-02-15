@@ -13,6 +13,9 @@ export type StateChange<State extends Record<string, Value>, Value extends objec
 export const SET_STATE_TYPE = 'redux-light/SET_STATE'
 export const RESET_STATE_TYPE = 'redux-light/RESET_STATE'
 
+/**
+ * Returns redux action to merge state changes.
+ */
 export const setStateAction = <State extends Record<string, Value>, Value extends object = object>(
   state: StateChange<State>
 ) =>
@@ -21,6 +24,9 @@ export const setStateAction = <State extends Record<string, Value>, Value extend
     state,
   } as const)
 
+/**
+ * Returns redux action to reset state to initial and merge state changes in one update.
+ */
 export const resetStateAction = <
   State extends Record<string, Value>,
   Value extends object = object
@@ -32,19 +38,19 @@ export const resetStateAction = <
     state,
   } as const)
 
-export const createReducer = <State extends Record<string, Value>, Value extends object = object>({
-  initialState,
-  validate = MOST_PROBABLY_NOT_PRODUCTION,
-}: {
+/**
+ * @param options.initialState Initial state of reducer.
+ * @param options.validate If set to true then ensures that state and its root prop values are objects, and that no new root props are added. Default value depends on environment.
+ */
+export const createReducer = <
+  State extends Record<string, Value>,
+  Value extends object = object
+>(options: {
   initialState: State
   validate?: boolean
 }) => {
-  console.log(
-    'MOST_PROBABLY_NOT_PRODUCTION',
-    MOST_PROBABLY_NOT_PRODUCTION,
-    __DEV__,
-    process.env.NODE_ENV
-  )
+  const { initialState, validate = MOST_PROBABLY_NOT_PRODUCTION } = options
+
   if (validate) {
     throwIfNotAnObject(initialState)
     Object.values(initialState).forEach(throwIfNotAnObject)
