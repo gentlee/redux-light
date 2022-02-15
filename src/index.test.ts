@@ -1,11 +1,5 @@
 import { Action, combineReducers, createStore } from 'redux'
-import {
-  createReducer,
-  resetStateAction,
-  setStateAction,
-  StateAction,
-  StateChange,
-} from './createStore'
+import { createReducer, resetStateAction, setStateAction, StateAction, StateChange } from '../lib'
 import { batchActions, enableBatching } from 'redux-batched-actions'
 
 const initialState = {

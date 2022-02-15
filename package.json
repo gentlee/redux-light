@@ -1,13 +1,15 @@
 {
+  "author": "Alexander Danilov",
   "name": "redux-light",
   "version": "1.0.6",
   "description": "Simplified redux without any boilerplate.",
-  "main": "lib/createStore.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "test": "node node_modules/jest/bin/jest.js --watch",
     "clean": "rm -rf lib",
-    "build": "npm run clean && npx babel src --out-dir lib",
-    "prepublishOnly": "node node_modules/jest/bin/jest.js && npm run build"
+    "build": "npm run clean && tsc && npx babel src/index.ts --out-file lib/index.js",
+    "test": "npm run build && node node_modules/jest/bin/jest.js",
+    "prepublishOnly": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -20,7 +22,6 @@
     "reducer",
     "boilerplate"
   ],
-  "author": "Alexander Danilov",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Gentlee/redux-light/issues"
