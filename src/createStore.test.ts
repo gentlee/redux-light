@@ -1,5 +1,11 @@
 import { Action, combineReducers, createStore } from 'redux'
-import { createReducer, resetStateAction, setStateAction, StateChange } from './createStore'
+import {
+  createReducer,
+  resetStateAction,
+  setStateAction,
+  StateAction,
+  StateChange,
+} from './createStore'
 import { batchActions, enableBatching } from 'redux-batched-actions'
 
 const initialState = {
@@ -59,6 +65,25 @@ test('should reset state', () => {
   })
 })
 
+test('should reset state the usual way', () => {
+  const reducer = createReducer({ initialState })
+  const store = createStore(
+    (
+      state: typeof initialState | undefined = initialState,
+      action: StateAction<typeof initialState> | Action<'reset'>
+    ) => {
+      return reducer(action.type === 'reset' ? undefined : state, action)
+    }
+  )
+
+  store.dispatch(setStateAction({ test: { value: 2 } }))
+  expect(store.getState().test.value).toEqual(2)
+
+  store.dispatch({ type: 'reset' })
+
+  expect(store.getState()).toEqual(initialState)
+})
+
 test('should work with other reducers', () => {
   const reducer = createReducer({ initialState })
   const store = createStore(
@@ -108,4 +133,38 @@ test('should work with batch actions', () => {
       test: '0',
     },
   })
+})
+
+test('should throw error when initial state or root values are not objects', () => {
+  expect(() => {
+    // @ts-ignore
+    createReducer({ initialState: 4 })
+  }).toThrow(
+    "State and its root property values should be of type 'object', got value '4' of type 'number'."
+  )
+
+  expect(() => {
+    // @ts-ignore
+    createReducer({ initialState: { test: 'error' } })
+  }).toThrow(
+    "State and its root property values should be of type 'object', got value 'error' of type 'string'."
+  )
+})
+
+test('should throw error when adding new root prop', () => {
+  const reducer = createReducer({ initialState })
+  const store = createStore(reducer)
+
+  expect(() => store.dispatch(setStateAction({ test: 1 }))).toThrow(
+    "State and its root property values should be of type 'object', got value '1' of type 'number'."
+  )
+})
+
+test('should throw error when adding new root prop', () => {
+  const reducer = createReducer({ initialState, validate: true })
+  const store = createStore(reducer)
+
+  expect(() => store.dispatch(setStateAction({ error: { value: 1 } }))).toThrow(
+    `No root property with name 'error' found in the current state.`
+  )
 })
