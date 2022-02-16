@@ -1,8 +1,8 @@
 # redux-light
 
-Simplified approach of using redux without any boilerplate :nerd_face:. With tests!
+Simplified approach of using redux without any boilerplate.
 
-Based on single reducer that merges new state for each root property. Pseudo-code is:
+Based on single reducer that merges new state for each root property. Pseudocode is:
 
     const newState = { ...oldState }
     for (const rootProp in changes) {
@@ -17,13 +17,13 @@ Initial state has to be an object, and values of its root props too. So it is si
    - [Initialize](https://github.com/Gentlee/redux-light#Initialize)
  - [Example](https://github.com/Gentlee/redux-light#example)
    - [store.js](https://github.com/Gentlee/redux-light#storejs)
-   - [services/auth.js](https://github.com/Gentlee/redux-light#servicesauth)
+   - [actions/auth.js](https://github.com/Gentlee/redux-light#actionsauth)
  - [React-redux](https://github.com/Gentlee/redux-light#react-redux)
    - [views/SignIn.js](https://github.com/Gentlee/redux-light#viewssigninjs)
 
 ## Install
 
-    npm install --save redux        // install redux if you don't use it yet
+    npm install --save redux        // redux is a peer dependency
     npm install --save redux-light
 
 ### Initialize
@@ -76,7 +76,7 @@ Initial state has to be an object, and values of its root props too. So it is si
 
 No need for other actions and reducers in your app.
  
-### services/auth.ts
+### actions/auth.ts
 
 Just write all business logic as usual functions.
 
@@ -105,7 +105,7 @@ Use `Provider`, `connect` and `useSelector` same as before, except no need to us
 
 ### views/SignIn.js
 
-    import { signIn } from '../services/auth';
+    import { signIn } from '../actions/auth';
 
     ...
 
