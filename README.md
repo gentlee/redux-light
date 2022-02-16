@@ -1,8 +1,8 @@
 # redux-light
 
-Simplified approach of using redux without any boilerplate.
+Simplified approach of using redux **without any boilerplate** - no action objects and reducers!
 
-Based on single reducer that merges new state for each root property. Pseudocode is:
+Based on **single reducer** that merges new state for each root property. Pseudocode is:
 
     const newState = { ...oldState }
     for (const rootProp in changes) {
@@ -11,17 +11,17 @@ Based on single reducer that merges new state for each root property. Pseudocode
 
 Initial state has to be an object, and values of its root props too. So it is similar to combining reduces in vanilla redux where initial states are objects (and they usually are).
     
-## Table of contents
+### Table of contents
 
  - [Install](https://github.com/Gentlee/redux-light#Install)
-   - [Initialize](https://github.com/Gentlee/redux-light#Initialize)
+ - [Initialize](https://github.com/Gentlee/redux-light#Initialize)
  - [Example](https://github.com/Gentlee/redux-light#example)
    - [store.js](https://github.com/Gentlee/redux-light#storejs)
    - [actions/auth.js](https://github.com/Gentlee/redux-light#actionsauth)
  - [React-redux](https://github.com/Gentlee/redux-light#react-redux)
    - [views/SignIn.js](https://github.com/Gentlee/redux-light#viewssigninjs)
 
-## Install
+### Install
 
     npm install --save redux        // redux is a peer dependency
     npm install --save redux-light
@@ -34,9 +34,13 @@ Initial state has to be an object, and values of its root props too. So it is si
     const reducer = createReducer({ initialState })
     const store = createStore(reducer)
     
-## Example
+### Example
 
-### store.ts
+It makes sense to import `getState` and `setState` directly if you don't create stores dynamically during runtime but create them only once on app start.
+
+And yes, it **can** be tested by mocking imports.
+
+#### store.ts
 
     import { createStore } from 'redux'
     import { createReducer, setStateAction, resetStateAction } from 'redux-light'
@@ -63,20 +67,11 @@ Initial state has to be an object, and values of its root props too. So it is si
 
     export const store = createReducer({ initialState, validate: __DEV__ })
 
-    //
-    // It makes sense to import getState and setState directly
-    // if you don't create stores dynamically during runtime
-    // but create them only once on app start.
-    //
-    // And yes, it can be tested by mocking imports.
-    //
     export const getState = store.getState
     export const setState = (state: StateChanges<AppState>) => store.dispatch(setStateAction(state))
     export const resetState = (state: StateChanges<AppState>) => store.dispatch(resetStateAction(state))
 
-No need for other actions and reducers in your app.
- 
-### actions/auth.ts
+#### actions/auth.ts
 
 Just write all business logic as usual functions.
 
@@ -99,11 +94,11 @@ Just write all business logic as usual functions.
         setState({ auth: { loading: false, token } });
     }
     
-## react-redux
+### react-redux
 
 Use `Provider`, `connect` and `useSelector` same as before, except no need to use `mapDispatchToProps` or `useDispatch`.
 
-### views/SignIn.js
+#### views/SignIn.js
 
     import { signIn } from '../actions/auth';
 
