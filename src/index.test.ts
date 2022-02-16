@@ -1,5 +1,11 @@
 import { Action, combineReducers, createStore } from 'redux'
-import { createReducer, resetStateAction, setStateAction, StateAction, StateChange } from '../lib'
+import {
+  createReducer,
+  resetStateAction,
+  setStateAction,
+  StateAction,
+  StateChange,
+} from 'redux-light'
 import { batchActions, enableBatching } from 'redux-batched-actions'
 
 const initialState = {
@@ -15,7 +21,8 @@ const initialState = {
 }
 
 test('should create reducer with proper initial state', () => {
-  const reducer = createReducer({ initialState })
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const reducer = require('redux-light').createReducer({ initialState })
   const store = createStore(reducer)
 
   expect(store.getState()).toBe(initialState)
