@@ -66,8 +66,8 @@ And yes, it **can** be tested by mocking imports.
     }
 
     const reducer = createReducer({ initialState, validate: __DEV__ })
+    
     export const store = createStore(reducer)
-
     export const getState = store.getState
     export const setState = (state: StateChange<AppState>) => store.dispatch(setStateAction(state))
     export const resetState = (state: StateChange<AppState>) => store.dispatch(resetStateAction(state))
