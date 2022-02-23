@@ -65,7 +65,7 @@ And yes, it **can** be tested by mocking imports.
         }
     }
 
-    const reducer = createReducer({ initialState, validate: __DEV__ })
+    const reducer = createReducer({ initialState, validate: __DEV__ }) // __DEV__ is a react-native global
     
     export const store = createStore(reducer)
     export const getState = store.getState

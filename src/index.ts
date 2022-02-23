@@ -1,6 +1,3 @@
-const MOST_PROBABLY_NOT_PRODUCTION =
-  __DEV__ ?? (Boolean(process?.env.NODE_ENV) && process.env.NODE_ENV !== 'production')
-
 export type StateAction<State extends Record<string, Value>, Value extends object = object> = {
   type: typeof SET_STATE_TYPE | typeof RESET_STATE_TYPE
   state: StateChange<State>
@@ -40,7 +37,7 @@ export const resetStateAction = <
 
 /**
  * @param options.initialState Initial state of reducer.
- * @param options.validate If set to true then ensures that state and its root prop values are objects, and that no new root props are added. Default value depends on environment.
+ * @param options.validate If set to true then ensures that state and its root prop values are objects, and that no new root props are added. Default value depends on environment. Default is true.
  */
 export const createReducer = <
   State extends Record<string, Value>,
@@ -49,7 +46,7 @@ export const createReducer = <
   initialState: State
   validate?: boolean
 }) => {
-  const { initialState, validate = MOST_PROBABLY_NOT_PRODUCTION } = options
+  const { initialState, validate = true } = options
 
   if (validate) {
     throwIfNotAnObject(initialState)
