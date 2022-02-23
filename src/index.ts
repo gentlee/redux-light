@@ -22,12 +22,13 @@ export const RESET_STATE_TYPE = 'redux-light/RESET_STATE'
 
 /**
  * Returns redux action to merge state changes.
+ * @param trace Use for additional logging.
  */
 export const setStateAction = <State extends Record<string, Value>, Value extends object = object>(
   state: StateChange<State, Value>,
   trace?: string
 ) =>
-  trace
+  trace !== undefined
     ? ({
         type: SET_STATE_TYPE,
         state,
@@ -40,6 +41,7 @@ export const setStateAction = <State extends Record<string, Value>, Value extend
 
 /**
  * Returns redux action to reset state to initial and merge state changes in one update.
+ * @param trace Use for additional logging.
  */
 export const resetStateAction = <
   State extends Record<string, Value>,
@@ -48,7 +50,7 @@ export const resetStateAction = <
   state?: StateChange<State, Value>,
   trace?: string
 ) =>
-  trace
+  trace !== undefined
     ? ({
         type: RESET_STATE_TYPE,
         state,

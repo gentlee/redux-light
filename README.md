@@ -118,3 +118,9 @@ Use `Provider`, `connect` and `useSelector` same as before, except no need to us
         loading: state.auth.loading,
         error: state.auth.error
     }))(SignIn);
+
+### Additional logging
+
+Trace argument can be used for additional logging of each action:
+
+    export const setState = (trace: string, state: StateChange<AppState>) => store.dispatch(setStateAction(state, trace))

@@ -1,7 +1,7 @@
 {
   "author": "Alexander Danilov",
   "name": "redux-light",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Simplified redux without any boilerplate.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
