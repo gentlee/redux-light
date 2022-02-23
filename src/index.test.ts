@@ -1,4 +1,4 @@
-import { Action, combineReducers, createStore } from 'redux'
+import { Action, applyMiddleware, combineReducers, createStore } from 'redux'
 import {
   createReducer,
   resetStateAction,
@@ -7,6 +7,7 @@ import {
   StateChange,
 } from 'redux-light'
 import { batchActions, enableBatching } from 'redux-batched-actions'
+import logger from 'redux-logger'
 
 const initialState = {
   test: {
@@ -44,7 +45,7 @@ test('should reset state', () => {
   const store = createStore(reducer)
   const setState = (state: StateChange<typeof initialState>) =>
     store.dispatch(setStateAction(state))
-  const resetState = (state: StateChange<typeof initialState>) =>
+  const resetState = (state?: StateChange<typeof initialState>) =>
     store.dispatch(resetStateAction(state))
   const getState = store.getState
 
@@ -62,6 +63,10 @@ test('should reset state', () => {
     },
     other: {},
   })
+
+  resetState()
+
+  expect(getState()).toBe(initialState)
 })
 
 test('should reset state the usual way', () => {
@@ -171,4 +176,30 @@ test('should throw error when adding new root prop', () => {
   expect(() => store.dispatch(setStateAction({ error: { value: 1 } }))).toThrow(
     `No root property with name 'error' found in the current state.`
   )
+})
+
+test('should add traces to logs', () => {
+  const reducer = createReducer({ initialState })
+  const store = createStore(reducer, applyMiddleware(logger))
+
+  const originalLog = console.log
+  console.log = jest.fn()
+
+  store.dispatch(setStateAction({ test: { value: 5 } }, 'testing setState'))
+  store.dispatch(resetStateAction({}, 'testing resetState'))
+
+  const testLog = console.log
+  console.log = originalLog
+
+  expect(testLog).toHaveBeenNthCalledWith(2, '%c action    ', 'color: #03A9F4; font-weight: bold', {
+    state: { test: { value: 5 } },
+    trace: 'testing setState',
+    type: 'redux-light/SET_STATE',
+  })
+
+  expect(testLog).toHaveBeenNthCalledWith(5, '%c action    ', 'color: #03A9F4; font-weight: bold', {
+    state: {},
+    trace: 'testing resetState',
+    type: 'redux-light/RESET_STATE',
+  })
 })

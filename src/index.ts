@@ -1,7 +1,17 @@
-export type StateAction<State extends Record<string, Value>, Value extends object = object> = {
-  type: typeof SET_STATE_TYPE | typeof RESET_STATE_TYPE
-  state: StateChange<State>
-}
+// TODO refactor generic type duplications
+
+// TODO use ReturnType
+export type StateAction<State extends Record<string, Value>, Value extends object = object> =
+  | {
+      type: typeof SET_STATE_TYPE
+      state: StateChange<State, Value>
+      trace?: string
+    }
+  | {
+      type: typeof RESET_STATE_TYPE
+      state?: StateChange<State, Value>
+      trace?: string
+    }
 
 export type StateChange<State extends Record<string, Value>, Value extends object = object> = {
   [K in keyof State]?: Partial<State[K]>
@@ -14,12 +24,19 @@ export const RESET_STATE_TYPE = 'redux-light/RESET_STATE'
  * Returns redux action to merge state changes.
  */
 export const setStateAction = <State extends Record<string, Value>, Value extends object = object>(
-  state: StateChange<State>
+  state: StateChange<State, Value>,
+  trace?: string
 ) =>
-  ({
-    type: SET_STATE_TYPE,
-    state,
-  } as const)
+  trace
+    ? ({
+        type: SET_STATE_TYPE,
+        state,
+        trace,
+      } as const)
+    : ({
+        type: SET_STATE_TYPE,
+        state,
+      } as const)
 
 /**
  * Returns redux action to reset state to initial and merge state changes in one update.
@@ -28,12 +45,19 @@ export const resetStateAction = <
   State extends Record<string, Value>,
   Value extends object = object
 >(
-  state: StateChange<State>
+  state?: StateChange<State, Value>,
+  trace?: string
 ) =>
-  ({
-    type: RESET_STATE_TYPE,
-    state,
-  } as const)
+  trace
+    ? ({
+        type: RESET_STATE_TYPE,
+        state,
+        trace,
+      } as const)
+    : ({
+        type: RESET_STATE_TYPE,
+        state,
+      } as const)
 
 /**
  * @param options.initialState Initial state of reducer.
@@ -53,10 +77,14 @@ export const createReducer = <
     Object.values(initialState).forEach(throwIfNotAnObject)
   }
 
-  return (state: State | undefined = initialState, action: StateAction<State>) => {
+  return (state: State | undefined = initialState, action: StateAction<State, Value>) => {
     if (action.type !== SET_STATE_TYPE && action.type !== RESET_STATE_TYPE) return state
 
-    if (action.type === RESET_STATE_TYPE) state = initialState
+    if (action.type === RESET_STATE_TYPE) {
+      if (!action.state) return initialState
+
+      state = initialState
+    }
 
     const newState = { ...state }
 
