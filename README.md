@@ -4,10 +4,12 @@ Simplified approach of using redux **without any boilerplate** - no action objec
 
 Based on **single reducer** that merges new state for each root property. Pseudocode is:
 
-    const newState = { ...oldState }
-    for (const rootProp in changes) {
-        newState[rootProp] = { ...oldState[rootProp], ...changes[rootProp] }
-    }
+```typescript
+const newState = { ...oldState }
+for (const rootProp in changes) {
+    newState[rootProp] = { ...oldState[rootProp], ...changes[rootProp] }
+}
+```
 
 Initial state has to be an object, and values of its root props too. So it is similar to combining reduces in vanilla redux where initial states are objects (and they usually are).
     
@@ -23,17 +25,21 @@ Initial state has to be an object, and values of its root props too. So it is si
 
 ### Install
 
-    npm install --save redux        // redux is a peer dependency
-    npm install --save redux-light
+```
+npm install --save redux        // redux is a peer dependency
+npm install --save redux-light
+```
 
 ### Initialize
 
-    import { createStore } from 'redux'
-    import { createReducer } from 'redux-light'
+```typescript
+import { createStore } from 'redux'
+import { createReducer } from 'redux-light'
 
-    const reducer = createReducer({ initialState })
-    const store = createStore(reducer)
-    
+const reducer = createReducer({ initialState })
+const store = createStore(reducer)
+```
+
 ### Example
 
 It makes sense to import `getState` and `setState` directly if you don't create stores dynamically during runtime but create them only once on app start.
@@ -42,58 +48,62 @@ And yes, it **can** be tested by mocking imports.
 
 #### store.ts
 
-    import { createStore } from 'redux'
-    import { createReducer, setStateAction, resetStateAction } from 'redux-light'
-    
-    export type AppState = {
-        auth: {
-            loading: boolean
-            token?: string
-            error?: Error
-        },
-        settings: {
-            theme: 'light' | 'dark'
-        }
-    }
+```typescript
+import { createStore } from 'redux'
+import { createReducer, setStateAction, resetStateAction } from 'redux-light'
 
-    const initialState: AppState = {
-        auth: {
-            loading: false
-        },
-        settings: {
-            theme: 'light'
-        }
+export type AppState = {
+    auth: {
+        loading: boolean
+        token?: string
+        error?: Error
+    },
+    settings: {
+        theme: 'light' | 'dark'
     }
+}
 
-    const reducer = createReducer({ initialState, validate: __DEV__ }) // __DEV__ is a react-native global
-    
-    export const store = createStore(reducer)
-    export const getState = store.getState
-    export const setState = (state: StateChange<AppState>) => store.dispatch(setStateAction(state))
-    export const resetState = (state: StateChange<AppState>) => store.dispatch(resetStateAction(state))
+const initialState: AppState = {
+    auth: {
+        loading: false
+    },
+    settings: {
+        theme: 'light'
+    }
+}
+
+const reducer = createReducer({ initialState, validate: __DEV__ }) // __DEV__ is a react-native global
+
+export const store = createStore(reducer)
+export const getState = store.getState
+export const setState = (state: StateChange<AppState>) => store.dispatch(setStateAction(state))
+export const resetState = (state: StateChange<AppState>) => store.dispatch(resetStateAction(state))
+```
 
 #### actions/auth.ts
 
 Just write all business logic as usual functions.
 
-    import { getState, setState } from '../redux/store';
-    
-    export async const signIn = (options: { login: string, password: string }) => {
-        if (getState().auth.loading) return;
+```typescript
+import { getState, setState } from '../redux/store';
 
-        setState({ auth: { loading: true } });
+export async const signIn = (options: { login: string, password: string }) => {
+    if (getState().auth.loading) return;
 
-        let token = undefined;
-        try {
-            token = await api.signIn(options);
-        }
-        catch (error) {
-            setState({ auth: { loading: false, error } });
-            return;
-        }
+    setState({ auth: { loading: true } });
 
-        setState({ auth: { loading: false, token } });
+    let token = undefined;
+    try {
+        token = await api.signIn(options);
     }
+    catch (error) {
+        setState({ auth: { loading: false, error } });
+        return;
+    }
+
+    setState({ auth: { loading: false, token } });
+}
+```
     
 ### react-redux
 
@@ -101,26 +111,30 @@ Use `Provider`, `connect` and `useSelector` same as before, except no need to us
 
 #### views/SignIn.js
 
-    import { signIn } from '../actions/auth';
+```typescript
+import { signIn } from '../actions/auth';
 
-    ...
+...
 
-    onSignInPress = () => {
-        signIn({
-            login: this.state.login,
-            password: this.state.password
-        });
-    }
+onSignInPress = () => {
+    signIn({
+        login: this.state.login,
+        password: this.state.password
+    });
+}
 
-    ...
+...
 
-    export default connect((state: AppState) => ({
-        loading: state.auth.loading,
-        error: state.auth.error
-    }))(SignIn);
+export default connect((state: AppState) => ({
+    loading: state.auth.loading,
+    error: state.auth.error
+}))(SignIn);
+```
 
 ### Additional logging
 
 Trace argument can be used for additional logging of each action:
 
-    export const setState = (trace: string, state: StateChange<AppState>) => store.dispatch(setStateAction(state, trace))
+```typescript
+export const setState = (trace: string, state: StateChange<AppState>) => store.dispatch(setStateAction(state, trace))
+```
