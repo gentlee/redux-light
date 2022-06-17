@@ -13,7 +13,7 @@ for (const rootProp in changes) {
 
 Initial state has to be an object, and values of its root props too. So it is similar to combining reduces in vanilla redux where initial states are objects (and they usually are).
 
-While having only two actions and one reducer, performace doesn't degrade over time. Covered with tests.
+While having only two actions and one reducer, **performace doesn't degrade** over time. Covered with tests.
     
 ### Table of contents
 
