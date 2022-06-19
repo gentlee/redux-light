@@ -2,7 +2,7 @@
 
 Simplified approach of using redux **without any boilerplate** - no action objects and reducers!
 
-Based on **single reducer** that merges new state for each root property. Pseudocode is:
+Based on **single reducer** that merges new state for each root property (2-level merge). Pseudocode is:
 
 ```typescript
 const newState = { ...oldState }
@@ -26,6 +26,11 @@ While having only two actions and one reducer, **performace doesn't degrade** ov
    - [views/SignIn.js](https://github.com/Gentlee/redux-light#viewssigninjs)
  - [Additional logging](https://github.com/Gentlee/redux-light#additionallogging)
  - [FAQ](https://github.com/Gentlee/redux-light#faq)
+   - [Why?](https://github.com/gentlee/redux-light#why)
+   - [It violates redux style guide](https://github.com/gentlee/redux-light#it-violates-redux-style-guide)
+   - [Do you even need redux here?](https://github.com/gentlee/redux-light#do-you-even-need-redux-here)
+   - [Won't action log history become useless?](https://github.com/gentlee/redux-light#wont-action-log-history-become-useless)
+   - [What if I need some other merging strategy rather than 2-level merge?](https://github.com/gentlee/redux-light#what-if-i-need-some-other-merging-strategy-rather-than-2-level-merge)
 
 ### Install
 
