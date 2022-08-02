@@ -1,6 +1,6 @@
 # redux-light
 
-Simplified approach of using redux **without any boilerplate** - no action objects and reducers!
+Simplified approach of using redux **without any boilerplate** - no action objects and reducers! And no redux-thunk needed.
 
 Based on **single reducer** that merges new state for each root property (2-level merge). Pseudocode is:
 
@@ -165,7 +165,7 @@ setState('auth/signInSuccess', {
 >
 >Nowadays, considering the fact that more and more apps start using other cache managers like `Apollo Client` (for GQL) or `React.Context` (state for group of screens/components), redux is left for fewer cases and using frameworks like `redux-toolkit` for such cases could be an overhead.
 >
-> But this package can be used for large projects as well, especially since it doesn't degrade over time that much because it uses only two actions and one reducer, if compared with the vanilla redux approach. (`O(1)` vs `O(n + m)` where `n` is number of actions and `m` is number of reducers). Only the plain size of state matters here.
+> But this package can be used for large projects as well, especially since it doesn't degrade over time that much because it uses only two actions and one reducer, if compared with the vanilla redux approach. (`O(1)` vs `O(n + m)` where `n` is number of actions and `m` is number of reducers). Only the plain size of state matters here. And also it allows to make mutable state, same as vanilla redux (not toolkit), in terms of optimization, while loosing the ability to connect to that state.
 
 #### It violates [redux style guide](https://redux.js.org/style-guide)
 
