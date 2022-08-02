@@ -1,6 +1,6 @@
 # redux-light
 
-Simplified approach of using redux **without any boilerplate** - no action objects and reducers! And no redux-thunk needed.
+Simplified approach of using redux **without any boilerplate** - no action objects and reducers! And no `redux-thunk` needed.
 
 Based on **single reducer** that merges new state for each root property (2-level merge). Pseudocode is:
 
