@@ -1,8 +1,8 @@
 # redux-light
 
-Simplified approach of using redux **without any boilerplate** - no action objects and reducers! And no `redux-thunk` needed.
+Simplified approach of using redux **without any boilerplate** - no action objects and reducers! And bonus - you will see how to use redux without additional async packages like `redux-thunk`.
 
-Based on **single reducer** that merges new state for each root property (2-level merge). Pseudocode is:
+Based on **single reducer** that merges new state for each root property (2-level merge). Pseudocode of reducer is:
 
 ```typescript
 const newState = { ...oldState }
@@ -53,7 +53,7 @@ const store = createStore(reducer)
 
 It makes sense to import `getState` and `setState` directly if you don't create stores dynamically during runtime but create them only once on app start.
 
-And yes, it **can** be tested by mocking imports.
+And yes, it **can** be tested by mocking imports or resetting the store before each test.
 
 #### store.ts
 
