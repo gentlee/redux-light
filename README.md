@@ -1,3 +1,11 @@
+### Donations 🙌
+
+**BTC:** bc1qs0sq7agz5j30qnqz9m60xj4tt8th6aazgw7kxr \
+**ETH:** 0x1D834755b5e889703930AC9b784CB625B3cd833E \
+**USDT(Tron):** TPrCq8LxGykQ4as3o1oB8V7x1w2YPU2o5n \
+**TON:** EQAtBuFWI3H_LpHfEToil4iYemtfmyzlaJpahM3tFSoxojvV \
+**DOGE:** D7GMQdKhKC9ymbT9PtcetSFTQjyPRRfkwT
+
 # redux-light
 
 Simplified approach of using redux **without any boilerplate** - no action objects and reducers! And bonus - you will see how to use redux without additional async packages like `redux-thunk`.
