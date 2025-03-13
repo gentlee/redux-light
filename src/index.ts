@@ -1,4 +1,4 @@
-// TODO refactor generic type duplications
+import { throwIfNotAnObject } from './utils'
 
 // TODO use ReturnType
 export type StateAction<State extends Record<string, Value>, Value extends object = object> =
@@ -29,15 +29,15 @@ export const setStateAction = <State extends Record<string, Value>, Value extend
   trace?: string
 ) =>
   trace !== undefined
-    ? ({
-        type: SET_STATE_TYPE,
-        state,
-        trace,
-      } as const)
-    : ({
-        type: SET_STATE_TYPE,
-        state,
-      } as const)
+  ? ({
+      type: SET_STATE_TYPE,
+      state,
+      trace,
+    } as const)
+  : ({
+      type: SET_STATE_TYPE,
+      state,
+    } as const)
 
 /**
  * Returns redux action to reset state to initial and merge state changes in one update.
@@ -51,19 +51,20 @@ export const resetStateAction = <
   trace?: string
 ) =>
   trace !== undefined
-    ? ({
-        type: RESET_STATE_TYPE,
-        state,
-        trace,
-      } as const)
-    : ({
-        type: RESET_STATE_TYPE,
-        state,
-      } as const)
+  ? ({
+      type: RESET_STATE_TYPE,
+      state,
+      trace,
+    } as const)
+  : ({
+      type: RESET_STATE_TYPE,
+      state,
+    } as const)
+
 
 /**
  * @param options.initialState Initial state of reducer.
- * @param options.validate If set to true then ensures that state and its root prop values are objects, and that no new root props are added. Default value depends on environment. Default is true.
+ * @param options.validate If set to true then ensures that state and its root prop values are objects, and that no new root props are added. Default is true.
  */
 export const createReducer = <
   State extends Record<string, Value>,
@@ -104,14 +105,5 @@ export const createReducer = <
     }
 
     return newState
-  }
-}
-
-const throwIfNotAnObject = (value: unknown) => {
-  const type = typeof value
-  if (type !== 'object') {
-    throw new Error(
-      `State and its root property values should be of type 'object', got value '${value}' of type '${type}'.`
-    )
   }
 }

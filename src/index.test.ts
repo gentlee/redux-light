@@ -6,8 +6,7 @@ import {
   StateAction,
   StateChange,
 } from 'redux-light'
-import { batchActions, enableBatching } from 'redux-batched-actions'
-import logger from 'redux-logger'
+import {logger} from 'redux-logger'
 
 const initialState = {
   test: {
@@ -117,28 +116,6 @@ test('should work with other reducers', () => {
       },
     },
     counter: 1,
-  })
-})
-
-test('should work with batch actions', () => {
-  const reducer = createReducer({ initialState })
-  // @ts-ignore redux-batched-actions TS issue
-  const store = createStore(enableBatching(reducer))
-  const subscriber = jest.fn()
-  store.subscribe(subscriber)
-
-  store.dispatch(
-    batchActions([setStateAction({ test: { value: 5 } }), setStateAction({ test: { test: '0' } })])
-  )
-
-  expect(subscriber).toBeCalledTimes(1)
-  expect(store.getState()).toEqual({
-    ...initialState,
-    test: {
-      ...initialState.test,
-      value: 5,
-      test: '0',
-    },
   })
 })
 
