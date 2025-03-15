@@ -9,7 +9,7 @@
 
 # redux-light
 
-Simplified approach of using redux with single reducer and **without any boilerplate**! And bonus - you will see how to use redux without additional async packages like `redux-thunk`.
+Simplified approach of using redux with single reducer and **without any boilerplate**! Includes `createContextAndHooks` util to create typed context and hooks for using multiple redux stores. And bonus - you will see how to use redux without additional async packages like `redux-thunk`.
 
 Two reducers to choose from:
 1. `createOneLevelReducer` - this one just have a single level object state, similar to **zustand**. Reducer just merges states using `{...old, ...new}`.
@@ -46,14 +46,18 @@ While having only two actions and one reducer, **performace doesn't degrade** ov
 ### Install
 
 ```
-npm install --save redux        // redux is a peer dependency
 npm install --save redux-light
+```
+
+Optional peers for `createContextAndHooks` util:
+```
+npm install --save react react-redux redux
 ```
 
 ### Initialize
 
 ```typescript
-import { createStore } from 'redux' // RTK can be used here
+import { createStore } from 'redux' // @reduxjs/toolkit can be used here
 import { createOneLevelReducer, createTwoLevelReducer } from 'redux-light'
 
 // One-level reducer
@@ -63,6 +67,16 @@ const store = createStore(reducer)
 // Two-level reducer
 const {reducer} = createTwoLevelReducer({ initialState })
 const store = createStore(reducer)
+
+// [Optional] Use createContextAndHooks to easily support multiple stores in the app
+const {
+  // Pass this context to <Provider context={CustomContext} store={store}>...</Provider>
+  context: CustomContext,
+  // Use these hooks instead of importing from redux
+  useStore: useCustomStore,
+  useDispatch: useCustomDispatch,
+  useSelector: useCustomSelector,
+} = createContextAndHooks(store)
 ```
 
 ### Example
