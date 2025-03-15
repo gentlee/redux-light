@@ -99,7 +99,10 @@ const initialState: AppState = {
   }
 }
 
-const {reducer, setStateAction, resetStateAction} = createReducer({ initialState, validate: IS_DEV }) // IS_DEV is just example variable
+const {reducer, setStateAction, resetStateAction} = createTwoLevelReducer({
+  initialState,
+  validate: IS_DEV, // IS_DEV is just example variable
+})
 
 export const store = createStore(reducer)
 export const getState = store.getState
