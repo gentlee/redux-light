@@ -9,9 +9,11 @@
 
 # redux-light
 
-Simplified approach of using redux **without any boilerplate** - no action objects and reducers! And bonus - you will see how to use redux without additional async packages like `redux-thunk`.
+Simplified approach of using redux with single reducer and **without any boilerplate**! And bonus - you will see how to use redux without additional async packages like `redux-thunk`.
 
-Based on **single reducer** that merges new state for each root property (2-level merge). Pseudocode of reducer is:
+Two reducers to choose from:
+1. `createOneLevelReducer` - this one just have a single level object state, similar to **zustand**. Reducer just merges states using `{...old, ...new}`.
+2. `createTwoLevelReducer` - [Default from v1 and v2] second one that merges new state for each root property (2-level merge). Pseudocode of reducer is:
 
 ```typescript
 const newState = { ...oldState }
@@ -51,14 +53,21 @@ npm install --save redux-light
 ### Initialize
 
 ```typescript
-import { createStore } from 'redux'
-import { createReducer } from 'redux-light'
+import { createStore } from 'redux' // RTK can be used here
+import { createOneLevelReducer, createTwoLevelReducer } from 'redux-light'
 
-const reducer = createReducer({ initialState })
+// One-level reducer
+const {reducer} = createOneLevelReducer({ initialState })
+const store = createStore(reducer)
+
+// Two-level reducer
+const {reducer} = createTwoLevelReducer({ initialState })
 const store = createStore(reducer)
 ```
 
 ### Example
+
+The next examples are done for **two-level reducer**. One-level reducer is pretty similar and even more simple.
 
 It makes sense to import `getState` and `setState` directly if you don't create stores dynamically during runtime but create them only once on app start.
 
@@ -68,7 +77,7 @@ And yes, it **can** be tested by mocking imports or resetting the store before e
 
 ```typescript
 import { createStore } from 'redux'
-import { createReducer, setStateAction, resetStateAction } from 'redux-light'
+import { createTwoLevelReducer } from 'redux-light'
 
 export type AppState = {
   auth: {
@@ -90,12 +99,12 @@ const initialState: AppState = {
   }
 }
 
-const reducer = createReducer({ initialState, validate: __DEV__ }) // __DEV__ is a react-native global
+const {reducer, setStateAction, resetStateAction} = createReducer({ initialState, validate: IS_DEV }) // IS_DEV is just example variable
 
 export const store = createStore(reducer)
 export const getState = store.getState
-export const setState = (state: StateChange<AppState>) => store.dispatch(setStateAction(state))
-export const resetState = (state: StateChange<AppState>) => store.dispatch(resetStateAction(state))
+export const setState = (state: StateChange<AppState>, trace?: string) => store.dispatch(setStateAction(state, trace))
+export const resetState = (state: StateChange<AppState>, trace?: string) => store.dispatch(resetStateAction(state, trace))
 ```
 
 #### actions/auth.ts
@@ -155,15 +164,10 @@ const SignIn: FC = () => {
 Trace argument can be used for additional logging of each action. It is convinient to see it in console logs and bug tracker breadcrumbs.
 
 ```typescript
-export const setState = (trace: string, state: StateChange<AppState>) => store.dispatch(setStateAction(state, trace))
-
-...
-
-setState('auth/signInSuccess', {
+setState({
   token,
   loading: false
-});
-
+}, 'auth/signInSuccess');
 ```
 
 ### FAQ
@@ -199,7 +203,6 @@ setState('auth/signInSuccess', {
 >So, ofc IMO, [redux-logger](https://github.com/LogRocket/redux-logger) remains the best choice for logging in most cases.
 
 #### What if I need some other merging strategy rather than 2-level merge?
+>First, you can choose 1-level merge.
 
->2-level merge forces the app state to be plain and simple, same as vanilla redux `{ reducer: state, otherReducer: otherState }`. But if you want some other merging strategy, you can always use additional merging utils for that while calculating the new state.
->
->I would say it is even a good practice to create several utils for that or use existing libs like [normalizr](https://github.com/paularmstrong/normalizr/blob/master/docs/api.md).
+>Second, 2-level merge forces the app state to be plain and simple, same as vanilla redux `{ reducer: state, otherReducer: otherState }`. But if you want some other merging strategy, you can always use additional merging utils for that while calculating the new state.

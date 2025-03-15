@@ -1,12 +1,6 @@
 import { Action, applyMiddleware, combineReducers, createStore } from 'redux'
-import {
-  createReducer,
-  resetStateAction,
-  setStateAction,
-  StateAction,
-  StateChange,
-} from 'redux-light'
-import {logger} from 'redux-logger'
+import { createTwoLevelReducer, TwoLevelStateChange } from 'redux-light'
+import { logger } from 'redux-logger'
 
 const initialState = {
   test: {
@@ -22,14 +16,14 @@ const initialState = {
 
 test('should create reducer with proper initial state', () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const reducer = require('redux-light').createReducer({ initialState })
+  const { reducer } = require('redux-light').createTwoLevelReducer({ initialState })
   const store = createStore(reducer)
 
   expect(store.getState()).toBe(initialState)
 })
 
-test('should change state an setStateAction', () => {
-  const reducer = createReducer({ initialState })
+test('should change state on setStateAction', () => {
+  const { reducer, setStateAction } = createTwoLevelReducer({ initialState })
   const store = createStore(reducer)
 
   store.dispatch(setStateAction({ test: { value: 1 } }))
@@ -40,11 +34,11 @@ test('should change state an setStateAction', () => {
 })
 
 test('should reset state', () => {
-  const reducer = createReducer({ initialState })
+  const { reducer, setStateAction, resetStateAction } = createTwoLevelReducer({ initialState })
   const store = createStore(reducer)
-  const setState = (state: StateChange<typeof initialState>) =>
+  const setState = (state: TwoLevelStateChange<typeof initialState>) =>
     store.dispatch(setStateAction(state))
-  const resetState = (state?: StateChange<typeof initialState>) =>
+  const resetState = (state?: TwoLevelStateChange<typeof initialState>) =>
     store.dispatch(resetStateAction(state))
   const getState = store.getState
 
@@ -69,17 +63,12 @@ test('should reset state', () => {
 })
 
 test('should reset state the usual way', () => {
-  const reducer = createReducer({ initialState })
+  const { reducer, setStateAction } = createTwoLevelReducer({ initialState })
   const store = createStore(
-    (
-      state: typeof initialState | undefined = initialState,
-      action: StateAction<typeof initialState> | Action<'reset'>
-    ) => {
-      return reducer(
-        action.type === 'reset' ? undefined : state,
-        action as StateAction<typeof initialState>
-      )
-    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (state: typeof initialState | undefined = initialState, action: any) => {
+      return reducer(action.type === 'reset' ? undefined : state, action)
+    },
   )
 
   store.dispatch(setStateAction({ test: { value: 2 } }))
@@ -91,7 +80,7 @@ test('should reset state the usual way', () => {
 })
 
 test('should work with other reducers', () => {
-  const reducer = createReducer({ initialState })
+  const { reducer, setStateAction } = createTwoLevelReducer({ initialState })
   const store = createStore(
     combineReducers({
       state: reducer,
@@ -101,7 +90,7 @@ test('should work with other reducers', () => {
         }
         return state
       },
-    })
+    }),
   )
 
   store.dispatch({ type: 'increment' })
@@ -122,41 +111,51 @@ test('should work with other reducers', () => {
 test('should throw error when initial state or root values are not objects', () => {
   expect(() => {
     // @ts-expect-error
-    createReducer({ initialState: 4 })
+    createTwoLevelReducer({ initialState: 4 })
   }).toThrow(
-    "State and its root property values should be of type 'object', got value '4' of type 'number'."
+    "State and its root property values should be of type 'object', got value '4' of type 'number'.",
   )
 
   expect(() => {
     // @ts-expect-error
-    createReducer({ initialState: { test: 'error' } })
+    createTwoLevelReducer({ initialState: { test: 'error' } })
   }).toThrow(
-    "State and its root property values should be of type 'object', got value 'error' of type 'string'."
+    "State and its root property values should be of type 'object', got value 'error' of type 'string'.",
+  )
+})
+
+test('should throw error when setting not object for root prop', () => {
+  const { reducer, setStateAction } = createTwoLevelReducer({ initialState })
+  const store = createStore(reducer)
+
+  expect(() =>
+    store.dispatch(
+      setStateAction({
+        // @ts-expect-error
+        test: 1,
+      }),
+    ),
+  ).toThrow(
+    "State and its root property values should be of type 'object', got value '1' of type 'number'.",
   )
 })
 
 test('should throw error when adding new root prop', () => {
-  const reducer = createReducer({ initialState })
+  const { reducer, setStateAction } = createTwoLevelReducer({ initialState })
   const store = createStore(reducer)
 
-  // @ts-expect-error
-  expect(() => store.dispatch(setStateAction({ test: 1 }))).toThrow(
-    "State and its root property values should be of type 'object', got value '1' of type 'number'."
-  )
-})
-
-test('should throw error when adding new root prop', () => {
-  const reducer = createReducer({ initialState })
-  const store = createStore(reducer)
-
-  // @ts-expect-error
-  expect(() => store.dispatch(setStateAction({ error: { value: 1 } }))).toThrow(
-    `No root property with name 'error' found in the current state.`
-  )
+  expect(() =>
+    store.dispatch(
+      setStateAction({
+        // @ts-expect-error error not in state
+        error: { value: 1 },
+      }),
+    ),
+  ).toThrow(`No root property with name 'error' found in the current state.`)
 })
 
 test('should add traces to logs', () => {
-  const reducer = createReducer({ initialState })
+  const { reducer, setStateAction, resetStateAction } = createTwoLevelReducer({ initialState })
   const store = createStore(reducer, applyMiddleware(logger))
 
   const originalLog = console.log
